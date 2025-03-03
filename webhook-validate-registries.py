@@ -38,4 +38,4 @@ def validate_image():
     })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8088, ssl_context=('certs/tls.crt', 'certs/tls.key'))
+    app.run(host='0.0.0.0', port=8081, ssl_context=('certs/tls.crt', 'certs/tls.key'))

@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: imagepolicywebhook
+spec: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-validate-registries
+  namespace: imagepolicywebhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-validate-registries
+  template:
+    metadata:
+      labels:
+        app: webhook-validate-registries
+    spec:
+      containers:
+      - name: webhook
+        image: ghcr.io/wiktorvip/app-webhook-validate-registries:0.1
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - name: tls-certs
+          mountPath: /app/certs
+          readOnly: true
+      volumes:
+      - name: tls-certs
+        secret:
+          secretName: tls-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-validate-registries
+  namespace: imagepolicywebhook
+spec:
+  selector:
+    app: webhook-validate-registries
+  ports:
+  - port: 443
+    targetPort: 8081
